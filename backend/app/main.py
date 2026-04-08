@@ -5,6 +5,9 @@ from app.routers.review import router as review_router
 from app.routers.graph import router as graph_router
 from app.routers.environment import router as environment_router
 
+# 👇 import vulnerable code so analyzer sees it
+import app.services.vulnerable_demo  # noqa
+
 app = FastAPI(title="DevGraph API", version="0.1.0")
 app.include_router(review_router)
 app.include_router(graph_router)
