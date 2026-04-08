@@ -1,6 +1,7 @@
 "use client";
 
 import { PullRequestItem } from "@/types/devgraph";
+import { GitPullRequest, Eye, CheckCircle } from "lucide-react";
 
 interface PullRequestListProps {
   prs: PullRequestItem[];
@@ -12,6 +13,12 @@ function statusClass(status: PullRequestItem["status"]): string {
   if (status === "review") return "status review";
   if (status === "merged") return "status merged";
   return "status open";
+}
+
+function statusIcon(status: PullRequestItem["status"]) {
+  if (status === "review") return <Eye size={12} />;
+  if (status === "merged") return <CheckCircle size={12} />;
+  return <GitPullRequest size={12} />;
 }
 
 export function PullRequestList({
@@ -32,7 +39,10 @@ export function PullRequestList({
           >
             <div className="pr-row">
               <strong>#{pr.number}</strong>
-              <span className={statusClass(pr.status)}>{pr.status}</span>
+              <span className={statusClass(pr.status)}>
+                {statusIcon(pr.status)}
+                <span className="ml-1">{pr.status}</span>
+              </span>
             </div>
             <p className="pr-title">{pr.title}</p>
             <p className="pr-meta">
