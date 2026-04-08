@@ -53,7 +53,9 @@ export function GraphCanvas({ analysis }: GraphCanvasProps) {
         })}
         {analysis.graph.nodes.map((node) => (
           <g key={node.id} transform={`translate(${node.x}, ${node.y})`}>
-            <circle r={node.type === "pr" ? 34 : 26} className={nodeClass(node.type, node.severity)} />
+            <circle r={node.type === "pr" ? 34 : 26} className={nodeClass(node.type, node.severity)}>
+              <title>{node.label}</title>
+            </circle>
             <text className="node-label" textAnchor="middle" y={4}>
               {node.label}
             </text>

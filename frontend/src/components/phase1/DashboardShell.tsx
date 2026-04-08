@@ -52,10 +52,10 @@ export function DashboardShell() {
           <PullRequestList prs={prs} selectedId={selectedId} onSelect={setSelectedId} />
         </div>
         <div className="col-center">
-          {loading || !analysis ? <div className="panel loading">Loading analysis...</div> : <GraphCanvas analysis={analysis} />}
+          {loading || !analysis ? <div className="panel loading"><div className="spinner"></div></div> : <GraphCanvas analysis={analysis} />}
         </div>
         <div className="col-right">
-          {loading || !analysis ? <div className="panel loading">Preparing insights...</div> : <AnalysisPanel analysis={analysis} />}
+          {loading || !analysis ? <div className="panel loading"><div className="spinner"></div></div> : <AnalysisPanel analysis={analysis} />}
         </div>
       </section>
     </main>
