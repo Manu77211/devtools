@@ -1,4 +1,7 @@
-from app.schemas.review import AnalysisResult, PullRequestItem
+from pathlib import Path
+from app.schemas.review import AnalysisResult, PullRequestItem, GraphPayload
+from app.services.code_parser import analyze_file
+from app.services.graph_builder import build_graph_from_analysis
 
 
 def _all_prs() -> list[PullRequestItem]:
@@ -65,17 +68,26 @@ async def get_analysis(org_id: str, pr_id: str) -> AnalysisResult:
         ],
         "pr-186": [],
     }
-    graph = {
-        "nodes": [
-            {"id": "pr", "label": f"PR #{selected.number}", "type": "pr", "x": 340, "y": 120},
-            {"id": "file1", "label": "module.py", "type": "file", "x": 340, "y": 280},
-        ],
-        "edges": [{"id": "e1", "source": "pr", "target": "file1", "relation": "modifies"}],
-    }
+    
+    # Build real graph from backend/app directory
+    base_path = Path(__file__).parent.parent  # backend/app
+    
+    analysis_data = {}
+    if base_path.exists():
+        for py_file in base_path.rglob("*.py"):
+            if ".venv" not in str(py_file) and "venv" not in str(py_file):
+                try:
+                    data = analyze_file(str(py_file))
+                    analysis_data[str(py_file.relative_to(base_path))] = data
+                except Exception:
+                    pass
+    
+    graph = build_graph_from_analysis(analysis_data)
+    
     return AnalysisResult(
         pr=selected,
         riskScore=risk_map.get(selected.id, 50),
-        summary="Phase 1 analysis result from backend service.",
+        summary="Phase 2 analysis result from real code parsing.",
         issues=issue_map.get(selected.id, []),
         graph=graph,
     )
